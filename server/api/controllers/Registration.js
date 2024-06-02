@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const pool = require('../models/User'); // Assuming User model is set up with the pool connection
+const pool = require('../Model/User');
 
 exports.register = async (req, res) => {
     const { name, email, password, role } = req.body;
@@ -13,7 +13,7 @@ exports.register = async (req, res) => {
             text: `INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4) RETURNING id, name, email, role`,
             values: [name, email, hashedPassword, role || 'user']
         };
-        
+
         const result = await pool.query(query);
         const newUser = result.rows[0];
 

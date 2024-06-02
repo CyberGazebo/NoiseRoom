@@ -1,5 +1,5 @@
-const pool = require('../models/Booking');
-const userPool = require('../models/User');
+const pool = require('../Model/Booking');
+const userPool = require('../Model/User');
 
 // Функция блокировки времени
 exports.blockTime = async (req, res) => {
@@ -66,7 +66,7 @@ exports.createBooking = async (req, res) => {
 
         try {
             const result = await pool.query(createBookingQuery);
-            
+
             // Удаление блокировки после успешного бронирования
             const deleteBlockQuery = {
                 text: `DELETE FROM booking_blocks WHERE date = $1 AND time = $2`,

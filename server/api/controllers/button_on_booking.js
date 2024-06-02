@@ -64,7 +64,7 @@ const groupTimeSlots = (timeSlots) => {
 };
 
 // Обработчик маршрута для отображения кнопок доступного времени.
-app.get('/available-time/:date', async (req, res) => {
+exports.getAvailableTime = async (req, res) => {
   try {
     // Получим выбранную дату из запроса.
     const selectedDate = req.params.date;
@@ -75,22 +75,12 @@ app.get('/available-time/:date', async (req, res) => {
     // Группируем временные слоты на утро, день и вечер.
     const { morningSlots, daySlots, eveningSlots } = groupTimeSlots(timeSlots);
 
-    // Создадим кнопки на основе доступных временных слотов, разделенных на утро, день и вечер.
-    const buttons = `
-      <h2>Утро:</h2>
-      ${morningSlots.map(time => `<button>${time}</button>`).join('\n')}
-      <h2>День:</h2>
-      ${daySlots.map(time => `<button>${time}</button>`).join('\n')}
-      <h2>Вечер:</h2>
-      ${eveningSlots.map(time => `<button>${time}</button>`).join('\n')}
-    `;
-
-    // Отправим HTML с кнопками в качестве ответа.
-    res.send(buttons);
+    // Отправим данные о доступных временных слотах в качестве ответа.
+    res.json({ morningSlots, daySlots, eveningSlots });
   } catch (error) {
-    res.status(500).send('Internal Server Error');
+    res.status(500).json({ error: 'Internal Server Error' });
   }
-});
+};
 
 // Запустим сервер на выбранном порту.
 app.listen(PORT, () => {

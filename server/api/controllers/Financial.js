@@ -1,5 +1,5 @@
-const pool = require('../models/Financial');
-
+const pool = require('../Model/Financial');
+const ExcelJS = require('exceljs');
 
 // Создание отчета о заказах
 exports.createOrderReport = async (req, res) => {
@@ -47,7 +47,6 @@ exports.createOrderReport = async (req, res) => {
 
 // Функция для генерации Excel отчета
 const generateExcelReport = async (data) => {
-  const ExcelJS = require('exceljs');
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet('Отчет о заказах');
 
@@ -72,7 +71,6 @@ const generateExcelReport = async (data) => {
   // Сохранение отчета в буфер
   return workbook.xlsx.writeBuffer();
 };
-
 
 // Создание графика активности
 exports.createActivityChart = async (req, res) => {

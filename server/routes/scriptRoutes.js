@@ -1,23 +1,42 @@
-// Папка ‘script’:
 const express = require('express');
 const router = express.Router();
+const reminder = require('../controllers/Reminder');
+const userController  = require('../controllers/Registration');
+const userController = require('../controllers/LogIn');
+const financialController = require('../controllers/Financial');
+const timeController = require('../controllers/button_on_booking');
+const bookingController = require('../controllers/BookingSript');
 
-const BookingScript = require('../script/BookingScript');
-const ButtonOnBooking = require('../script/button_on_booking');
-const Financial = require('../script/Financial');
-const LogIn = require('../script/LogIn');
-const Registration = require('../script/Registration');
-const Reminder = require('../script/Reminder');
 
-// Маршруты для скриптов
-router.post('/booking-script', (req, res) => {
-    // Логика обработки скрипта для бронирования
+// Маршрут для отправки напоминаний
+router.get('/sendReminder', async (req, res) => {
+  try {
+    await reminder.sendReminder();
+    res.status(200).json({ message: 'Напоминания успешно отправлены' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Ошибка при отправке напоминаний' });
+  }
 });
+// Маршрут для регистрации пользователя
+router.post('/register', userController.register);
+// Маршрут для авторизации пользователя
+router.post('/login', userController.login);
+// Маршрут для создания отчета о заказах
+router.post('/order-report', financialController.createOrderReport);
 
-router.post('/button-on-booking', (req, res) => {
-    // Логика обработки кнопки при бронировании
-});
+// Маршрут для создания графика активности
+router.get('/activity-chart', financialController.createActivityChart);
 
-// Добавьте маршруты для других скриптов по аналогии
+
+// Маршрут для отображения доступного времени.
+router.get('/available-time/:date', timeController.getAvailableTime);
+
+// Маршрут для блокировки времени
+router.post('/block-time', bookingController.blockTime);
+
+// Маршрут для создания бронирования
+router.post('/create-booking', bookingController.createBooking);
+
 
 module.exports = router;

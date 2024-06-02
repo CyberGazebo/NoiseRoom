@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const pool = require('../models/User'); // Assuming User model is set up with the pool connection
+const pool = require('../Model/User'); // Предполагается, что модель User настроена с подключением к пулу
 
 const secretKey = 'your_jwt_secret_key'; // Замените на ваш секретный ключ
 

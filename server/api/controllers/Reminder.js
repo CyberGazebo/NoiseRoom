@@ -1,21 +1,24 @@
-const pool = require('../models/Booking');
+const pool = require('../Model/Booking');
 const nodemailer = require('nodemailer');
 const VK = require('vk-io');
 const sms = require('sms');
 
-// Напоминание о бронировании
+// Функция для отправки напоминаний
 exports.sendReminder = async () => {
+  // SQL-запрос для выбора бронирований, которым необходимо отправить напоминание
   const reminderQuery = {
     text: `SELECT b.id, b.date, b.time, u.email, u.vkid, u.phonenumber FROM bookings b JOIN users u ON b.user_id = u.id WHERE b.status = 'Запланирован' AND (b.date - NOW()) IN (INTERVAL '1 day', INTERVAL '12 hours', INTERVAL '2 hours')`,
   };
 
   try {
+    // Выполняем запрос
     const result = await pool.query(reminderQuery);
 
+    // Проходим по результатам и отправляем напоминания
     result.rows.forEach(async (row) => {
       const { id, date, time, email, vkid, phonenumber } = row;
 
-      // Отправка Email
+      // Отправка Email-напоминания
       if (email) {
         await sendEmail(email, `Напоминание о бронировании`, `Ваше бронирование запланировано на ${date} в ${time}.`);
       }
@@ -25,7 +28,7 @@ exports.sendReminder = async () => {
         await sendVKMessage(vkid, `Ваше бронирование запланировано на ${date} в ${time}.`);
       }
 
-      // Отправка SMS
+      // Отправка SMS-напоминания
       if (phonenumber) {
         await sendSMS(phonenumber, `Ваше бронирование запланировано на ${date} в ${time}.`);
       }
@@ -41,13 +44,13 @@ const sendEmail = async (to, subject, text) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'your_email@gmail.com',
-      pass: 'your_password',
+      user: 'noiseroombookingsite@gmail.com',
+      pass: 'awH2nTWcCaB_',
     },
   });
 
   const mailOptions = {
-    from: 'your_email@gmail.com',
+    from: 'noiseroombookingsite@gmail.com',
     to,
     subject,
     text,
@@ -55,6 +58,7 @@ const sendEmail = async (to, subject, text) => {
 
   await transporter.sendMail(mailOptions);
 };
+
 
 // Функция для отправки сообщения ВКонтакте
 const sendVKMessage = async (vkid, message) => {
